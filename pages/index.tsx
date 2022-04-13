@@ -1,34 +1,62 @@
 import { NextPage, GetStaticProps } from 'next'
+import { Card, Text, Grid, Row } from '@nextui-org/react'
 import { Layout } from 'components/layouts'
 import { pokeApi } from 'api'
-import { IResponsePoke } from 'interface/IResponsePoke'
+import { IResponsePoke, PokemonList } from 'interface/IResponsePoke'
 
-const HomePage: NextPage = (props) => {
+interface IProps {
+  pokemons: PokemonList[]
+}
 
-  console.log(props)
+const HomePage: NextPage<IProps> = ({ pokemons }) => {
 
   return (
     <Layout
       title="Listado de pokemon"
     >
-      
+      <h1>Listado de pokemon</h1>
+      <Grid.Container gap={2} justify="flex-start">
+        {pokemons.map((pokemon, index) => (
+          <Grid xs={6} sm={3} key={index}>
+            <Card hoverable clickable>
+              <Card.Body css={{ p: 0 }}>
+                <Card.Image
+                  objectFit="contain"
+                  src={`${pokemon.img}`}
+                  width="80%"
+                  height={110}
+                  alt={pokemon.name}
+                />
+              </Card.Body>
+              <Card.Footer>
+                <Row wrap="wrap" justify="space-between">
+                  <Text b>{pokemon.name}</Text>
+                  <Text css={{ color: "$accents4", fontWeight: "$semibold" }}>
+                    {pokemon.name}
+                  </Text>
+                </Row>
+              </Card.Footer>
+            </Card>
+          </Grid>
+        ))}
+      </Grid.Container>
     </Layout>
   )
 }
-
-// You should use getStaticProps when:
-//- The data required to render the page is available at build time ahead of a user’s request.
-//- The data comes from a headless CMS.
-//- The data can be publicly cached (not user-specific).
-//- The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   
   const { data } = await pokeApi.get<IResponsePoke>('/pokemon?limit=151')
 
+  const parseData = data.results.map((pokemon: PokemonList, index: number) => ({
+    ...pokemon,
+    id: index + 1,
+    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${(index + 1)}.svg`
+  }))
+
   return {
     props: {
-      pokemons: data.results
+      pokemons: parseData
     }
   }
 }

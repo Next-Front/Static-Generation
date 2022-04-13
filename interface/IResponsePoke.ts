@@ -2,10 +2,12 @@ export interface IResponsePoke {
   count:    number;
   next?:    string;
   previous?:string;
-  results:  List[];
+  results:  PokemonList[];
 }
 
-interface List {
-  name: string;
-  url:  string;
+export interface PokemonList {
+  name:   string;
+  url:    string;
+  id?:    number;
+  img?:   string;
 }

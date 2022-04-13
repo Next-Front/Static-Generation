@@ -3,7 +3,7 @@ import { FC } from "react"
 import { NavBar } from 'components/ui/';
 
 interface LayoutProps {
-  children: JSX.Element[] | JSX.Element,
+  children: React.ReactNode,
   title?  : string
 }
 
