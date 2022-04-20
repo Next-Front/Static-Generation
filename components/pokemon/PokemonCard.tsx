@@ -1,16 +1,24 @@
 import { FC } from "react"
 import { PokemonList } from "interface/IResponsePoke"
 import { Card, Text, Row, Grid } from '@nextui-org/react'
+import { useRouter } from "next/router"
 
 interface IProps {
   pokemon: PokemonList
 }
 
 export const PokemonCard: FC<IProps> = ({ pokemon }) => {
+
+  const router = useRouter()
+
+  const onClick = () => {
+    router.push(`/pokemon/${pokemon.id}`)
+  }
+
   return (
     <>
       <Grid xs={6} sm={3} md={2} key={pokemon.id}>
-        <Card hoverable clickable>
+        <Card hoverable clickable onClick={onClick}>
           <Card.Body css={{ p: 0 }}>
             <Card.Image
               objectFit="contain"
