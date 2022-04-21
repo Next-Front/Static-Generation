@@ -16,3 +16,8 @@ export const existInFavorites = (id: number): boolean => {
   let favorites: number[] = JSON.parse(localStorage.getItem('favorites') || '[]');
   return favorites.includes(id);
 }
+
+export const listFavorite = (): number[] => {
+  if ( typeof window === 'undefined' ) return [];
+  return JSON.parse(localStorage.getItem('favorites') || '[]');
+}

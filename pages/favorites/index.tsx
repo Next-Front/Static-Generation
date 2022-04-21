@@ -1,9 +1,10 @@
 import { Layout } from 'components/layouts'
+import { NoFavorites } from 'components/ui'
 
 const FavoritesPage = () => {
   return (
-    <Layout>
-      <h1>Favorites</h1>
+    <Layout title='Favoritos'>
+      <NoFavorites />
     </Layout>
   )
 }
