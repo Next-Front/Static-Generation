@@ -12,10 +12,10 @@ export const NoFavorites = () => {
     }}>
       <Text h1>No hay favoritos</Text>
       <Image 
-        src='https://media.giphy.com/media/3o7btLqYqjXqQqQq2U/giphy.gif'
+        src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/132.svg'
         alt='pokemon'
-        width={250}
-        height={250}
+        width={100}
+        height={100}
         css={{
           opacity: 0.3
         }}

@@ -1,4 +1,5 @@
 export { 
   toggleFavorite, 
-  existInFavorites 
+  existInFavorites,
+  listFavorite
 } from "./localStorageFavorites";
