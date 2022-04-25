@@ -6,12 +6,14 @@ import { pokeApi } from "api";
 import { PokemonDetail } from "interface/IResponsePokeDetail";
 import { toggleFavorite, existInFavorites } from 'utils';
 import confetti from 'canvas-confetti';
+import { IResponsePoke } from 'interface/IResponsePoke';
+
 interface IProps {
   pokemon: PokemonDetail;
 }
 
-const PokemonDetail: NextPage<IProps> = ({ pokemon }) => {
-
+const PokemonByName: NextPage<IProps> = ({ pokemon }) => {
+  
   const [isInFavortites, setisInFavortites] = useState( existInFavorites(pokemon.id));
 
   const onToggleFavorite = () => {
@@ -96,31 +98,38 @@ const PokemonDetail: NextPage<IProps> = ({ pokemon }) => {
           </Card>
         </Grid>
       </Grid.Container>
-      
     </Layout>
   )
 }
 
+export default PokemonByName
+
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-  const pokemons = [...Array(151)].map( (_, i) => `${i + 1}` );
+  const pokemosName: string[] = [];
+  const { data } = await pokeApi.get<IResponsePoke>('/pokemon?limit=151')
+
+  data.results.forEach((pokemon) => {
+    pokemosName.push(pokemon.name)
+  })
 
   return {
-    paths: pokemons.map( (id) => ({
+    paths: pokemosName.map( (name) => ({
       params: {
-        id
+        name
       }
     })),
-    fallback: false
+    fallback: "blocking"
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  
-  const { id } = params as { id: string };
 
-  const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${id}`);
+export const getStaticProps: GetStaticProps = async (ctx) => {
+
+  const { name } = ctx.params as { name: string };
+
+  const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${name}`);
 
   return {
     props: {
@@ -128,5 +137,3 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     }
   }
 }
-
-export default PokemonDetail
