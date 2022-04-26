@@ -7,6 +7,21 @@
 - The data can be publicly cached (not user-specific).
 - The page must be pre-rendered (for SEO) and be very fast — getStaticProps generates HTML and JSON files, both of which can be cached by a CDN for performance.
 
+```
+  export const getStaticProps: GetStaticProps = async (ctx) => {
+
+    const { name } = ctx.params as { name: string };
+
+    const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${name}`);
+
+    return {
+      props: {
+        pokemon: data
+      }
+    }
+  }
+```
+
 <hr>
 
 ### getStaticPaths
@@ -24,6 +39,29 @@
       ],
       // fallback: "blocking"
       fallback: false
+    }
+  }
+```
+
+<hr>
+
+### Incremental Static Regeneration
+
+- regenerate static pages every n seconds
+- add in return the propertie <span style='color: yellow'>revalidate: [seconds]</span>
+
+```
+  export const getStaticProps: GetStaticProps = async (ctx) => {
+
+    const { name } = ctx.params as { name: string };
+
+    const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${name}`);
+
+    return {
+      props: {
+        pokemon: data
+      },
+      revalidate: 86400 // 1 day
     }
   }
 ```
