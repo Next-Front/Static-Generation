@@ -7,6 +7,7 @@ import { PokemonDetail } from "interface/IResponsePokeDetail";
 import { toggleFavorite, existInFavorites } from 'utils';
 import confetti from 'canvas-confetti';
 import { IResponsePoke } from 'interface/IResponsePoke';
+import { getPokemonInfo } from 'utils/getPokemonInfo';
 
 interface IProps {
   pokemon: PokemonDetail;
@@ -129,7 +130,16 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
   const { name } = ctx.params as { name: string };
 
-  const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${name}`);
+  const data  = await getPokemonInfo(name);
+
+  if( !data ) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
 
   return {
     props: {
