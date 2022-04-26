@@ -48,7 +48,7 @@
 ### Incremental Static Regeneration
 
 - regenerate static pages every n seconds
-- add in return the propertie <span style='color: yellow'>revalidate: [seconds]</span>
+- add in return the property <span style='color: yellow'>revalidate: [seconds]</span>
 
 ```
   export const getStaticProps: GetStaticProps = async (ctx) => {
@@ -56,6 +56,53 @@
     const { name } = ctx.params as { name: string };
 
     const { data } = await pokeApi.get<PokemonDetail>(`/pokemon/${name}`);
+
+    return {
+      props: {
+        pokemon: data
+      },
+      revalidate: 86400 // 1 day
+    }
+  }
+```
+
+
+### Incremental Static Generation
+- generate content after run build
+- change the property `fallback` from `false` to `blocking`
+
+```
+  export const getStaticPaths: GetStaticPaths = async (ctx) => {
+
+    const pokemons = [...Array(151)].map( (_, i) => `${i + 1}` );
+
+    return {
+      paths: pokemons.map( (id) => ({
+        params: {
+          id
+        }
+      })),
+      fallback: 'blocking'
+    }
+  }
+```
+- Then validate if the request data exist 
+
+```
+  export const getStaticProps: GetStaticProps = async ({ params }) => {
+    
+    const { id } = params as { id: string };
+
+    const data  = await getPokemonInfo(id)
+
+    if( !data ) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false
+        }
+      }
+    }
 
     return {
       props: {
